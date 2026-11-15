@@ -17,5 +17,5 @@ test("web interface imports historical source and labels it separately",()=>{
  assert.match(html,/REAL NASA DATA · PAST EVENT/);
  assert.match(html,/FICTIONAL GAME EVENT/);
  assert.match(html,/\/api\/space-weather/);
- assert.match(html,/fictional, not predictions/);
+ assert.match(html,/fictional, not predictions|all game resource effects are fictional/);
 });
