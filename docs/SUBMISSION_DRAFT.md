@@ -85,3 +85,16 @@ The challenge's **NASA Data & Resources** list explicitly names:
 **Our selected eligible resource is NASA DONKI**, not OSDR/RadLab/Mars Trek. Turn 2's source panel uses an archived real flare with attribution and attempts a read-only recent DONKI FLR request. Its gameplay consequences remain invented educational rules. This establishes the resource's presence on the selected challenge list; it does **not** independently establish a successful recent API request, adherence to all submission rules, or award eligibility.
 
 **Before the final submission:** verify the deployed endpoint returns a correctly labeled NASA response or the transparent historical fallback, and demonstrate the source panel in the recorded video. Respect the NASA disclaimer: the team project is not NASA-endorsed.
+
+## Final team coordination — 2026-11-15
+
+- **Science correction verified against uploaded NASA 2025 spreadsheet:** ESDMD #0805 is **Autonomous Surface Mobility and Navigation**. Do not call #0805 “Lunar caves.” Other linked gap IDs have been mapped to their official spreadsheet titles in `game-engine.js`. These are related technology gaps, **not** claims that NASA has validated the game mechanics.
+- **Mission Control copy:** Emir reports having prepared one-line ratings and sourced facts. Those exact texts were not attached to the materials available for this update; do not claim they have been integrated without receiving and testing the file.
+- **Video maker:** Hamza may assemble a screen recording of the game. To comply with the team's stated under-18 restrictions, use **gameplay capture only**, with text captions or adult narration; do not include any minor's face, photo, or recorded voice. Producing a video does not require appearing in it.
+- **Submissions:** Team lead must populate the NASA Space Apps Project Tab with the short description, playable public project link, public repository link, eligible NASA dataset attribution, and an accurate disclosure of any AI assistance. A publicly accessible 30-second video OR up to 7 slides is required per the team's reported guide. Verify actual portal fields and capture final submission confirmation.
+
+### Concise NASA Data field (proposed)
+NASA DONKI (NASA Open APIs) supplies sourced historical solar-flare context and a read-only recent-event endpoint for Turn 2. NASA's 2025 Moon-to-Mars Architecture-Driven Technology Gaps spreadsheet provides related engineering problem references for Turns 4 and 5. The game's event effects, resources and scoring are simplified educational mechanics; they are not NASA observations or predictions.
+
+### AI use disclosure (draft; verify with contributors)
+AI-assisted development tools were used in implementing and testing parts of the game, including code, interface, scoring diagnostics, and documentation. Team members reviewed the mechanics and NASA source references and conducted manual gameplay testing. No claim is made that AI-generated gameplay outcomes represent real NASA mission calculations. **Confirm with Emir and Hamza whether and how they used AI before submitting a statement on behalf of the entire team.**
