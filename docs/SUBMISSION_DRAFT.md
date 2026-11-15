@@ -23,7 +23,7 @@ The player selects two specialists, manages six resource bars (crew wellbeing, h
 - All game resource values, probability thresholds, turn lengths, and specialist effects are simplified unvalidated educational rules. NASA technology-gap mappings proposed in the design document should not be advertised as verified without checking against the primary NASA spreadsheet.
 
 ## How we built it
-A static HTML/CSS/JavaScript interface with an isolated pure JavaScript state machine. Seeded pseudo-random events allow reproducible tests. GitHub Actions runs Node's built-in game-engine tests. The game is deployed on Vercel and runs without paid cloud services or external APIs.
+A static HTML/CSS/JavaScript interface with an isolated pure JavaScript state machine. Seeded pseudo-random events allow reproducible tests. GitHub Actions runs Node's built-in game-engine tests. The game is deployed on Vercel and runs without paid cloud services. A read-only server-side endpoint optionally queries the NASA DONKI FLR API and falls back to a sourced historical flare.
 
 ## What makes it distinctive
 - Six explicit, readable gauges instead of averages that could hide a dangerous oxygen or power shortage
@@ -37,7 +37,7 @@ A static HTML/CSS/JavaScript interface with an isolated pure JavaScript state ma
 - Automated tests have run in GitHub Actions; inspect the final commit's check before submission.
 - The team reports a successful manual game playthrough, but independent browser interaction and youth usability results have not yet been documented.
 - Specialist balance and scoring rubric are provisional pending Emir's and Hamza's review.
-- Do not claim independent NASA endorsement, validated lunar outcomes, a live API, user-study results, or a deployed Mars mission.
+- Do not claim independent NASA endorsement, validated lunar outcomes, a verified successful live DONKI response, user-study results, or a deployed Mars mission.
 
 ## Scientific sources
 1. [NASA CCMC SEP validation event record — September 10, 2017](https://ccmc.gsfc.nasa.gov/assessment/topics/SEP/campaign2020/20170910.php) — flare onset, peak, end and X8.2 classification.
@@ -64,5 +64,17 @@ A static HTML/CSS/JavaScript interface with an isolated pure JavaScript state ma
 - [ ] Submit by **November 15, 2026, 11:59 PM local time** (NASA Space Apps official 2026 page).
 - [ ] Capture the portal's final confirmation and project URL. **No submission is claimed until confirmed.**
 
-## Global Awards resource eligibility gate
-NASA Space Apps organizers state that eligibility for Global Awards requires at least one NASA data/resource item **listed under the Resources tab of the team's selected challenge**. DONKI alone is not proof of that requirement unless the selected challenge includes it. Confirm the registered challenge and its Resources, use and cite an eligible source, and do not claim eligibility until checked.
+## NASA resource compliance — selected challenge (confirmed from official Resources tab text provided by team lead)
+
+Selected challenge: **Build a Junior Astronaut Mission Trainer**, NASA Space Apps Challenge 2026.
+
+The challenge's **NASA Data & Resources** list explicitly names:
+- [NASA Open APIs](https://api.nasa.gov/) (including DONKI)
+- [NASA DONKI](https://ccmc.gsfc.nasa.gov/tools/DONKI/)
+- [NASA OSDR](https://osdr.nasa.gov/bio/repo/)
+- [NASA RadLab](https://visualization.osdr.nasa.gov/radlab/gui/data-api/)
+- [NASA Mars Trek](https://trek.nasa.gov/mars/)
+
+**Our selected eligible resource is NASA DONKI**, not OSDR/RadLab/Mars Trek. Turn 2's source panel uses an archived real flare with attribution and attempts a read-only recent DONKI FLR request. Its gameplay consequences remain invented educational rules. This establishes the resource's presence on the selected challenge list; it does **not** independently establish a successful recent API request, adherence to all submission rules, or award eligibility.
+
+**Before the final submission:** verify the deployed endpoint returns a correctly labeled NASA response or the transparent historical fallback, and demonstrate the source panel in the recorded video. Respect the NASA disclaimer: the team project is not NASA-endorsed.
