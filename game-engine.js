@@ -196,6 +196,24 @@ export function debrief(g){
  const heading=g.win?(high?"Mission Control is proud of you! Great decisions, and they paid off.":"You made it, but luck helped a lot. Look at these turns:"):
   (high?"You made smart choices, but the Moon was tough this time.":"The mission didn't make it. Here's what went wrong:");
  const poor=g.log.filter(x=>x.rating==="Poor");
- const worst=g.log.filter(x=>x.roll!==null).sort((a,b)=>(a.after.crew+a.after.base)-(b.after.crew+b.after.base))[0];
- return {heading,score:g.score,quality:high?"strong":"developing",outcome:g.win?"SURVIVED":"MISSION ENDED",turns:g.log,poor,lesson:poor.length?null:worst?"Even with good decisions, simulated randomness can produce losses.":"Every decision changes the mission's options."};
+ const unsuccessful=g.log.filter(x=>x.roll!==null&&/failed|did not work/i.test(x.consequence));
+ const worst=unsuccessful.length?unsuccessful.reduce((a,b)=>{
+  const loss=t=>RESOURCE_KEYS.reduce((sum,k)=>sum+Math.max(0,t.before[k]-t.after[k]),0);
+  return loss(b)>loss(a)?b:a;
+ }):null;
+ const drop=RESOURCE_KEYS.map(k=>({key:k,value:Math.max(0,START[k]-g.resources[k])}))
+   .sort((a,b)=>b.value-a.value)[0]?.key||"power";
+ const tips={
+  crew:"Protect crew health early; the Doctor can prevent two routine fatigue losses.",
+  base:"Preserve base integrity before the final night, when further wear is expected.",
+  parts:"Save spare parts for urgent habitat and power problems.",
+  power:"Store energy while sunlight is available; solar power stops during the long night.",
+  water:"Watch water reserves and protect recycling equipment.",
+  oxygen:"Monitor oxygen closely because an air shortage can end the mission quickly."
+ };
+ const lesson=poor.length?null:worst
+  ?"Turn "+worst.turn+" had an unfavorable random outcome. Your decision is scored separately from that outcome."
+  :"No Poor decisions were identified; review how your resources changed over six turns.";
+ return {heading,score:g.score,quality:high?"strong":"developing",outcome:g.win?"SURVIVED":"MISSION ENDED",
+  turns:g.log,poor,lesson,tip:tips[drop],mostTroubled:drop};
 }
