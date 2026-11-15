@@ -215,3 +215,12 @@ test("NASA 2025 technology gap identifiers use the spreadsheet's official titles
   }
  }
 });
+
+test("Mission Control remembers the displayed option, including turn-one wording",()=>{
+ const start=createGame(["doctor","field"],17);
+ const actual=optionList(start).find(x=>x.id==="risk");
+ const next=playTurn(start,"risk");
+ assert.equal(actual.label,"Use extra power now");
+ assert.equal(next.log[0].choiceLabel,actual.label);
+ assert.equal(next.log[0].choice,"risk");
+});
