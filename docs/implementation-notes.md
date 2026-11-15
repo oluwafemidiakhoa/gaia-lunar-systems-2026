@@ -21,3 +21,9 @@ This implementation is an educational prototype based on Emir's proposed game-sy
 ## Verification
 Run `npm test` using Node 20+; no packages need to be installed for the test suite.
 Deploy as a static site; `index.html` imports `game-engine.js`.
+
+## Update — 2026-11-15
+- Fixed negative-resource underflow and zero-penalty cascade behavior; end-of-turn resources are bounded 0–10.
+- Added regression tests for power crossing below zero and crew death.
+- DONKI endpoint is a read-only observation feed. NASA API failures must leave the historical case in place, never fabricate a live observation.
+- Global Awards resource-list eligibility is pending challenge-specific verification.
