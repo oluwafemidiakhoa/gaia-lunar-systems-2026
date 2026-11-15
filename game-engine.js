@@ -85,11 +85,11 @@ function automatic(g,r){
  if(!(g.crew.includes("doctor")&&[3,5].includes(g.turn))&&!(g.turn===1&&g.config?.noCrewLossTurn1))add(r,"crew",-1);
 }
 function zeroPenalties(r){
- if(r.parts===0)add(r,"base",-1);
- if(r.base===0)add(r,"power",-1);
- if(r.power===0){add(r,"oxygen",-2);add(r,"water",-1);}
- if(r.water===0)add(r,"crew",-2);
- if(r.oxygen===0)add(r,"crew",-5);
+ if(r.parts<=0)add(r,"base",-1);
+ if(r.base<=0)add(r,"power",-1);
+ if(r.power<=0){add(r,"oxygen",-2);add(r,"water",-1);}
+ if(r.water<=0)add(r,"crew",-2);
+ if(r.oxygen<=0)add(r,"crew",-5);
 }
 function scoreDecision(g,e,choice,r){
  const has=key=>g.crew.includes(key);
@@ -150,13 +150,14 @@ export function playTurn(g,choice){
  let seed=g.seed,consequence="",roll=null;
  const draw=()=>{const x=random(seed);seed=x.seed;roll=x.value;return roll;};
  const finish=(ended,won)=>{
+  normalize(r);
   const log={turn:g.turn,event:e.title,choice,points:grade.points,rating:grade.rating,reason:grade.reason,before,after:{...r},consequence,roll,investmentResults:due.map(p=>({target:p.target,success:p.success}))};
   return {...g,turn:ended?g.turn:g.turn+1,resources:r,seed,pending:[...g.pending.filter(p=>p.turn>g.turn),...pending],score:g.score+grade.points,finished:ended,win:won,log:[...g.log,log]};
  };
  if(g.turn===6){
   automatic(g,r);normalize(r);zeroPenalties(r);normalize(r);
   grade=scoreDecision(g,e,choice,{...r});
-  if(r.crew===0){consequence="Critical resources failed before the final decision.";return finish(true,false);}
+  if(r.crew<=0){consequence="Critical resources failed before the final decision.";return finish(true,false);}
   if(choice==="shutdown"){add(r,"crew",-2);consequence="Equipment shut down to conserve energy; crew health fell.";}
   else {add(r,"base",-2);if(r.power<2)add(r,"crew",-3);consequence="Heating remained on, increasing stress on the habitat.";}
   normalize(r);
@@ -186,13 +187,13 @@ export function playTurn(g,choice){
   pending.push({turn:g.turn+2,target:e.target,bonus,success:draw()<0.5});
   consequence="An investment was made; its result arrives after two turns.";
  }
- automatic(g,r);zeroPenalties(r);
- return finish(r.crew===0,false);
+ automatic(g,r);zeroPenalties(r);normalize(r);
+ return finish(r.crew<=0,false);
 }
 export function debrief(g){
  if(!g.finished)return null;
  const high=g.score>=700;
- const heading=g.win?(high?"Mission Control is proud of you! Great decisions, and they paid off.":"You made it, but some decisions need review."):
+ const heading=g.win?(high?"Mission Control is proud of you! Great decisions, and they paid off.":"You made it, but luck helped a lot. Look at these turns:"):
   (high?"You made smart choices, but the Moon was tough this time.":"The mission didn't make it. Here's what went wrong:");
  const poor=g.log.filter(x=>x.rating==="Poor");
  const worst=g.log.filter(x=>x.roll!==null).sort((a,b)=>(a.after.crew+a.after.base)-(b.after.crew+b.after.base))[0];
