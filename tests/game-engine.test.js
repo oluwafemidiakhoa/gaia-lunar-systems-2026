@@ -191,3 +191,27 @@ test("v2.1 risk points depend on need and support, not merely Field's presence",
  const reckless=playTurn(costly,"risk");
  assert.equal(reckless.log.at(-1).points,0);
 });
+
+test("NASA 2025 technology gap identifiers use the spreadsheet's official titles",()=>{
+ const expected={
+  "0801":"Lunar Dust-Tolerant Systems and Dust Mitigation",
+  "0805":"Autonomous Surface Mobility and Navigation",
+  "0901":"Scalable Lunar Surface Power Generation",
+  "0903":"Power Management and Distribution between Surface Elements",
+  "0303":"Dormancy Recovery for Habitat Water Storage, Distribution, and Reclamation",
+  "0201":"Extreme Environment Avionics",
+  "0405":"Exploration Medical Capabilities for Deep Space Missions",
+  "0501":"Robotic Inspection, Maintenance, and Repair",
+  "0502":"In-situ Manufacturing of Spares, Repairs, and New Parts",
+  "0304":"Habitat Environmental Monitors and Capabilities to Support Deep Space Missions",
+  "0601":"Oxygen Extraction from Lunar Regolith"
+ };
+ for(let seed=0;seed<120;seed++){
+  let g=createGame(["doctor","field"],seed);
+  while(!g.finished){
+   const e=eventFor(g);
+   if(e.gap)assert.equal(e.gapLabel,expected[e.gap],e.gap);
+   g=playTurn(g,optionList(g)[0].id);
+  }
+ }
+});
