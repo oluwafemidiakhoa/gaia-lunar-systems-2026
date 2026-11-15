@@ -44,7 +44,7 @@ function render(){const e=eventFor(game),n=game.turn;
 $("turntitle").textContent=`Turn ${n} of 6`;$("phase").textContent=n<=3?"SUNLIT PHASE":"LUNAR NIGHT";$("days").textContent=`Days ${(n-1)*5+1}–${n*5}`;
 $("progress").innerHTML=Array.from({length:6},(_,i)=>`<div class="step ${i<n?"done":""}" title="Turn ${i+1}"></div>`).join("");
 $("crew-pills").innerHTML=game.crew.map(id=>`<span class="pill">${safe(ROLES[id].name)}</span>`).join("");
-$("resources").innerHTML=RESOURCE_KEYS.map(k=>{let v=game.resources[k],label={crew:"Crew health",base:"Base integrity",parts:"Spare parts",power:"Power",water:"Water",oxygen:"Oxygen"}[k];return `<div class="resource"><span><strong>${label}</strong><b>${v}/10</b></span><div class="bar" role="progressbar" aria-label="${label}" aria-valuenow="${v}" aria-valuemin="0" aria-valuemax="10"><div class="fill ${v<=2?"critical":v<4?"low":""}" style="width:${v*10}%"></div></div>${v<=3?`<small role="alert" style="display:block;margin-top:8px;color:#ffb2b7">${safe(WARNINGS[k])}</small>`:""}</div>`}).join("");
+$("resources").innerHTML=RESOURCE_KEYS.map(k=>{let v=game.resources[k],label={crew:"🧑‍🚀 Crew",base:"🏠 Base",parts:"🔧 Parts",power:"⚡ Power",water:"💧 Water",oxygen:"🌬️ Oxygen"}[k];return `<div class="resource"><span><strong>${label}</strong><b>${v}/10</b></span><div class="bar" role="progressbar" aria-label="${label}" aria-valuenow="${v}" aria-valuemin="0" aria-valuemax="10"><div class="fill ${v<=2?"critical":v<4?"low":""}" style="width:${v*10}%"></div></div>${v<=3?`<small role="alert" style="display:block;margin-top:8px;color:#ffb2b7">${safe(WARNINGS[k])}</small>`:""}</div>`}).join("");
 const evidence=n===2?`<details class="story-help" id="nasa-evidence"><summary>☀️ Real NASA observation</summary><div class="notice"><strong>REAL NASA DATA · PAST EVENT</strong><p>On 10 September 2017, NASA recorded an ${safe(solarRecord.classification)} solar flare, peaking at ${safe(solarRecord.peakUTC)}.</p><p><a href="${safe(solarRecord.sourceUrl)}" target="_blank" rel="noopener noreferrer" style="color:#9de5f6">NASA CCMC event record</a> · <a href="${safe(solarRecord.corroborationUrl)}" target="_blank" rel="noopener noreferrer" style="color:#9de5f6">NOAA confirmation</a></p><small>${safe(solarCaveat)}</small></div></details>`:"";
 const gapLabel=e.gap?`<p class="chip">NASA TECHNOLOGY-GAP REFERENCE #${safe(e.gap)} · ${safe(e.gapLabel||"Technology problem")}</p><small><a href="https://www.nasa.gov/wp-content/uploads/2025/12/2025-architecture-driven-technology-gaps.xlsx" target="_blank" rel="noopener noreferrer" style="color:#9de5f6">NASA Moon to Mars Technology Gaps (2025) ↗</a> · Game effects are fictional.</small>`:"";
 $("event").innerHTML=`<div class="chip">${safe(e.tag)} • FICTIONAL GAME EVENT</div><h3>${safe(e.title)}</h3><p>${safe(e.body)}</p>${gapLabel}${evidence}`;
@@ -77,17 +77,16 @@ $("feedback").innerHTML=`<strong>What happened?</strong> ${safe(entry.consequenc
 $("feedback").hidden=false;$("continue").textContent=game.finished?"View mission debrief →":"Next turn →";$("continue").hidden=false;
 }
 function shortReason(t){
- const reason=t.reason||"Your choice changed the mission.";
- if(t.rating==="Good")return "Good call! "+reason;
- if(t.rating==="OK")return "A fair try! "+reason;
- return "Next time, try a different plan. "+reason;
+ if(t.rating==="Good")return t.choice==="invest"?"Good call! You planned for later.":t.choice==="safe"?"Good call! You protected a low resource.":t.turn===5?"Good call! Your crew choice helped.":"Good call! You thought ahead.";
+ if(t.rating==="OK")return "Fair choice! You balanced the risks.";
+ return "Try another plan next time. What might you change?";
 }
 function showReview(){
  const t=reviewData.turns[reviewIndex];
  if(!t){$("history").innerHTML=`<div class="review-card"><h3>Mission review complete!</h3><p>${safe(reviewData.lesson||"You tried six mission decisions.")}</p><p><strong>Tip:</strong> ${safe(reviewData.tip)}</p></div>`;$("review-progress").textContent="Review complete";$("review-next").textContent="Play again ↻";return;}
  const labels={risk:"Take a risk",safe:"Play safe",invest:"Invest",go:"Go fix it",hold:"Hold on",shutdown:"Shut down",heat:"Keep heating"};
  $("review-progress").textContent=`Turn ${reviewIndex+1} of ${reviewData.turns.length}`;
- $("history").innerHTML=`<article class="review-card"><div class="chip">TURN ${t.turn} · MISSION CONTROL</div><h3>${safe(t.event)}</h3><p>You chose: <strong>${safe(labels[t.choice]||t.choice)}</strong></p><span class="pill">${safe(t.rating)} · ${t.points} points</span><p>${safe(shortReason(t))}</p><details class="story-help"><summary>See what happened</summary><p>${safe(t.consequence)}</p></details></article>`;
+ $("history").innerHTML=`<article class="review-card"><div class="chip">TURN ${t.turn} · MISSION CONTROL</div><h3>${safe(t.event)}</h3><p>You chose: <strong>${safe(labels[t.choice]||t.choice)}</strong></p><span class="pill">${safe(t.rating)} · ${t.points} points</span><p>${safe(shortReason(t))}</p><details class="story-help"><summary>Why this rating?</summary><p>${safe(t.reason)}</p><p>${safe(t.consequence)}</p></details></article>`;
  $("review-next").textContent=reviewIndex===reviewData.turns.length-1?"See your tip →":"Next turn →";
 }
 function nextReview(){
