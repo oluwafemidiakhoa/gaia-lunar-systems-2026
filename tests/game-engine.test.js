@@ -130,7 +130,7 @@ test("turn two flare card targets power and uses Field specialist",()=>{
  const noFieldState={...s,crew:["doctor","scientist"]};
  const withoutField=playTurn(noFieldState,"risk");
  assert.equal(withField.log.at(-1).points,75); // Field helps, but a healthy power reserve does not justify top score
- assert.equal(withoutField.log.at(-1).points,75);
+ assert.equal(withoutField.log.at(-1).points,0); // Unsupported gamble with ample power is avoidable
 });
 test("turns four and five provide NASA gap codes when applicable",()=>{
  for(let seed=0;seed<20;seed++){
