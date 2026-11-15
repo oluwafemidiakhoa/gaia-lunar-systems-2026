@@ -16,5 +16,6 @@ test("web interface imports historical source and labels it separately",()=>{
  assert.match(html,/from "\.\/nasa-evidence\.js"/);
  assert.match(html,/REAL NASA DATA · PAST EVENT/);
  assert.match(html,/FICTIONAL GAME EVENT/);
- assert.match(html,/No live DONKI data feed is used/);
+ assert.match(html,/\/api\/space-weather/);
+ assert.match(html,/fictional, not predictions/);
 });
