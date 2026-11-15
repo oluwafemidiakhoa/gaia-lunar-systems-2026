@@ -111,7 +111,7 @@ function showReview(){
  if(!t){$("history").innerHTML=`<div class="review-card"><h3>Mission review complete!</h3><p>${safe(reviewData.lesson||"You tried six mission decisions.")}</p><p><strong>Tip:</strong> ${safe(reviewData.tip)}</p></div>`;$("review-progress").textContent="Review complete";$("review-next").textContent="Play again ↻";return;}
  const labels={risk:"Take a risk",safe:"Play safe",invest:"Invest",go:"Go fix it",hold:"Hold on",shutdown:"Shut down",heat:"Keep heating"};
  $("review-progress").textContent=`Turn ${reviewIndex+1} of ${reviewData.turns.length}`;
- $("history").innerHTML=`<article class="review-card"><div class="chip">TURN ${t.turn} · MISSION CONTROL</div><h3>${safe(t.event)}</h3><p>You chose: <strong>${safe(labels[t.choice]||t.choice)}</strong></p><span class="pill">${safe(t.rating)} · ${t.points} points</span><p>${safe(shortReason(t))}</p><details class="story-help"><summary>Why this rating?</summary><p>${safe(t.reason)}</p><p>${safe(t.consequence)}</p></details></article>`;
+ $("history").innerHTML=`<article class="review-card"><div class="chip">TURN ${t.turn} · MISSION CONTROL</div><h3>${safe(t.event)}</h3><p>You chose: <strong>${safe(t.choiceLabel||labels[t.choice]||t.choice)}</strong></p><span class="pill">${safe(t.rating)} · ${t.points} points</span><p>${safe(shortReason(t))}</p><details class="story-help"><summary>Why this rating?</summary><p>${safe(t.reason)}</p><p>${safe(t.consequence)}</p></details></article>`;
  $("review-next").textContent=reviewIndex===reviewData.turns.length-1?"See your tip →":"Next turn →";
 }
 function previousReview(){if(!reviewData||reviewIndex<=0)return;reviewIndex--;showReview();}
