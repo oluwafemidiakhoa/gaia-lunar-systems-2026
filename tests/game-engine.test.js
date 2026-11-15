@@ -224,3 +224,23 @@ test("Mission Control remembers the displayed option, including turn-one wording
  assert.equal(next.log[0].choiceLabel,actual.label);
  assert.equal(next.log[0].choice,"risk");
 });
+
+test("youth-choice descriptions name the resource affected and keep original choices",()=>{
+ const roles=["doctor","field"];
+ let g=createGame(roles,260);
+ const first=optionList(g);
+ assert.deepEqual(first.map(x=>x.label),["Use extra power now","Play safe","Invest in storage"]);
+ g=playTurn(g,"safe");
+ for(let turn=2;turn<=4;turn++){
+  const choices=optionList(g);
+  assert.deepEqual(choices.map(x=>x.id),["risk","safe","invest"]);
+  for(const choice of choices)assert.ok(choice.summary.length<125,"Too-long choice summary on turn "+turn);
+  assert.match(choices[0].summary,/Spend 1 /);
+  assert.match(choices[1].summary,/Lose a little/);
+  assert.match(choices[2].summary,/50% chance/);
+  g=playTurn(g,"safe");
+ }
+ const opts=optionList(g);
+ assert.equal(opts.length,2);
+ for(const choice of opts)assert.ok(choice.summary.length<125);
+});
