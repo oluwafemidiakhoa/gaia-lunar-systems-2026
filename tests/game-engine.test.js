@@ -48,3 +48,46 @@ test("mission events progress in intended order",()=>{
   assert.equal(eventFor(s).id,"solar");
 });
 test("invalid actions are rejected",()=>assert.throws(()=>playTurn(createGame(["doctor","engineer"],1),"teleport")));
+
+test("turn 1 temptation is certain and rated Poor",()=>{
+ let x=playTurn(createGame(["doctor","engineer"],1),"risk");
+ assert.equal(x.log[0].points,0);
+ assert.equal(x.log[0].rating,"Poor");
+ assert.equal(x.resources.power,4); // 6 - 3 + 1 daylight
+ assert.equal(x.resources.crew,10); // +1 temptation, -1 fatigue, capped at 10
+});
+test("turn five presents only two specialist-based choices",()=>{
+ let s=createGame(["doctor","engineer"],2);
+ for(let i=0;i<4 && !s.finished;i++)s=playTurn(s,"safe");
+ assert.equal(s.turn,5);
+ assert.deepEqual(optionList(s).map(o=>o.id),["go","hold"]);
+ let next=playTurn(s,"go");
+ assert.ok([0,75,150].includes(next.log.at(-1).points));
+});
+test("final choices use v2 costs",()=>{
+ let s=createGame(["doctor","engineer"],1);
+ for(let i=0;i<5&&!s.finished;i++)s=playTurn(s,optionList(s).find(o=>o.id==="safe")?.id??optionList(s)[0].id);
+ if(!s.finished){
+  const a=playTurn(s,"shutdown");
+  assert.equal(a.finished,true);
+  assert.ok(a.log.at(-1).points===0||a.log.at(-1).points===250);
+  assert.equal(a.log.at(-1).after.crew,Math.max(0,s.resources.crew-3)); // -1 routine, -2 final
+ }
+});
+test("all poor decisions are listed in debrief",()=>{
+ let s=createGame(["doctor","engineer"],1);
+ s=playTurn(s,"risk");
+ while(!s.finished)s=playTurn(s,optionList(s)[0].id);
+ const d=debrief(s);
+ assert.equal(d.poor.length,s.log.filter(x=>x.rating==="Poor").length);
+ assert.ok(d.poor.some(x=>x.turn===1));
+});
+test("all five turn-four event cards can be selected",()=>{
+ const ids=new Set();
+ for(let seed=0;seed<100;seed++){
+  let s=createGame(["doctor","engineer"],seed);
+  for(let i=0;i<3&&!s.finished;i++)s=playTurn(s,"safe");
+  if(!s.finished) ids.add(eventFor(s).id);
+ }
+ assert.deepEqual([...ids].sort(),["battery","cable","computer","dust","water"]);
+});
