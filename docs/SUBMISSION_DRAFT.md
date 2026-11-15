@@ -17,7 +17,7 @@ The player selects two specialists, manages six resource bars (crew wellbeing, h
 **Educational distinction:** A wise choice can fail through chance. A reckless choice can sometimes succeed. The game presents an explanatory rubric rather than claiming to compute objectively ideal decisions.
 
 ## Science and data
-- The turn-two education panel documents a **historical X8.2 solar flare on 10 September 2017** (start 15:35 UTC, peak 16:06 UTC, end 16:31 UTC) using NASA CCMC's SEP event record and a NOAA contemporary bulletin.
+- The turn-two evidence panel documents a **historical X8.2 solar flare on 10 September 2017** (start 15:35 UTC, peak 16:06 UTC, end 16:31 UTC) using NASA CCMC's SEP event record and a NOAA contemporary bulletin.
 - The resource effects and risks in the **fictional game card** are **not derived from the flare observations**, do not imply that it struck any lunar crew, and are not lunar engineering predictions.
 - The prototype now includes a cached server-side NASA DONKI FLR request. When a validated recent flare is returned, the game can show its date, classification, and source. If unavailable, it displays the historical NASA case; recent-data functionality still requires live endpoint verification.
 - All game resource values, probability thresholds, turn lengths, and specialist effects are simplified unvalidated educational rules. NASA technology-gap mappings proposed in the design document should not be advertised as verified without checking against the primary NASA spreadsheet.
@@ -45,13 +45,20 @@ A static HTML/CSS/JavaScript interface with an isolated pure JavaScript state ma
 3. [NASA Moon science overview](https://science.nasa.gov/moon/) — general educational background.
 4. [NASA Space Apps Challenge 2026 home and submission schedule](https://www.spaceappschallenge.org/2026/) — event schedule and portal guidance.
 
-## Demo outline (about two minutes)
-1. Open the game and state the learning goal (15 s).
-2. Select two specialists and explain their tradeoff (20 s).
-3. Show resource gauges and turn-one temptation (20 s).
-4. On turn two, point to the dated NASA event and distinguish it from the fictional simulation (30 s).
-5. Advance to the night, demonstrate a risky decision and warnings (25 s).
-6. Show Mission Control's outcome, Good/OK/Poor ratings and high score (30 s).
+## Required demo — max 30 seconds of video OR max 7 slides
+
+NASA Space Apps 2026 submission guidance allows **one video lasting no more than 30 seconds** or **one presentation of no more than seven slides**. The demo link and final project link are separate, and must be viewable without requesting access. If the video is not in English, add English subtitles.
+
+**30-second shot list (English captions):**
+- **0–5 s:** “Can kids run a Moon base?” — game landing screen.
+- **5–10 s:** Choose two specialists and show six resource bars.
+- **10–18 s:** Make a decision, show power/crew consequences and the NASA-sourced turn-two flare observation. On-screen text: “NASA data ≠ simulated game effects.”
+- **18–24 s:** Show lunar night hazards, warnings, and the final choice.
+- **24–30 s:** Show Mission Control decision ratings and replay score; end with “Play The First Night”.
+
+**Alternative seven-slide outline:** Challenge; learning goal; player choices; authentic NASA flare and citation; resource tradeoffs; Mission Control feedback; playable link and team.
+
+Only use verified captures of the actual game. Do not invent playtesting, measured learning improvement, or empirical win rates. Obtain a separate publicly viewable demo URL, verify it in an incognito browser window, and insert that URL in the Space Apps Project Tab.
 
 ## Submission checklist — operator actions
 - [ ] Confirm that every team member has joined the registered 2026 team in the correct event.
