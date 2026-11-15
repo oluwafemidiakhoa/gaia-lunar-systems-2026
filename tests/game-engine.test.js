@@ -10,7 +10,7 @@ test("crew selection requires exactly two unique specialists",()=>{
 test("six-turn simulation terminates and resources remain bounded",()=>{
   for(let seed=0;seed<100;seed++){
     let s=createGame(["doctor","engineer"],seed);
-    while(!s.finished){s=playTurn(s,"safe");}
+    while(!s.finished){s=playTurn(s,optionList(s).find(o=>o.id==="safe")?.id??optionList(s)[0].id);}
     assert.ok(s.log.length<=6);
     assert.equal(s.log.length,s.turn);
     for(const val of Object.values(s.resources))assert.ok(val>=0&&val<=10);
