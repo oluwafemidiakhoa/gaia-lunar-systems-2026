@@ -46,7 +46,8 @@ $("progress").innerHTML=Array.from({length:6},(_,i)=>`<div class="step ${i<n?"do
 $("crew-pills").innerHTML=game.crew.map(id=>`<span class="pill">${safe(ROLES[id].name)}</span>`).join("");
 $("resources").innerHTML=RESOURCE_KEYS.map(k=>{let v=game.resources[k],label={crew:"Crew health",base:"Base integrity",parts:"Spare parts",power:"Power",water:"Water",oxygen:"Oxygen"}[k];return `<div class="resource"><span><strong>${label}</strong><b>${v}/10</b></span><div class="bar" role="progressbar" aria-label="${label}" aria-valuenow="${v}" aria-valuemin="0" aria-valuemax="10"><div class="fill ${v<=2?"critical":v<4?"low":""}" style="width:${v*10}%"></div></div>${v<=3?`<small role="alert" style="display:block;margin-top:8px;color:#ffb2b7">${safe(WARNINGS[k])}</small>`:""}</div>`}).join("");
 const evidence=n===2?`<div class="notice" id="nasa-evidence"><strong>REAL NASA DATA · PAST EVENT</strong><p>On 10 September 2017, NASA recorded an ${safe(solarRecord.classification)} solar flare, peaking at ${safe(solarRecord.peakUTC)}.</p><p><a href="${safe(solarRecord.sourceUrl)}" target="_blank" rel="noopener noreferrer" style="color:#9de5f6">NASA CCMC event record</a> · <a href="${safe(solarRecord.corroborationUrl)}" target="_blank" rel="noopener noreferrer" style="color:#9de5f6">NOAA confirmation</a></p><small>${safe(solarCaveat)}</small></div>`:"";
-$("event").innerHTML=`<div class="chip">${safe(e.tag)} • FICTIONAL GAME EVENT</div><h3>${safe(e.title)}</h3><p>${safe(e.body)}</p>${evidence}`;
+const gapLabel=e.gap?`<p class="chip">NASA TECHNOLOGY-GAP REFERENCE #${safe(e.gap)} · ${safe(e.gapLabel||"Technology problem")}</p><small>Source: NASA Moon to Mars Architecture-Driven Technology Gaps (2025). Game effects are fictional.</small>`:"";
+$("event").innerHTML=`<div class="chip">${safe(e.tag)} • FICTIONAL GAME EVENT</div><h3>${safe(e.title)}</h3><p>${safe(e.body)}</p>${gapLabel}${evidence}`;
 if(n===2)loadLatestSpaceWeather();
 $("choices").innerHTML=optionList(game).map(o=>`<button class="btn" data-choice="${o.id}">${safe(o.label)}<small>${safe(o.summary)}</small></button>`).join("");
 document.querySelectorAll("[data-choice]").forEach(el=>el.onclick=()=>apply(el.dataset.choice));
@@ -65,7 +66,7 @@ async function loadLatestSpaceWeather(){
   const e=payload.event;
   if(typeof e.date!=="string"||typeof e.classification!=="string"||typeof e.peakUTC!=="string")return;
   const source=(typeof e.link==="string"&&e.link.startsWith("https://"))?e.link:"https://api.nasa.gov/";
-  panel.innerHTML=`<strong>REAL NASA DONKI DATA · RECENT SOLAR FLARE</strong><p>NASA recorded a ${safe(e.classification)} solar flare on ${safe(e.date)} (peak ${safe(e.peakUTC)} UTC).</p><p><a href="${safe(source)}" target="_blank" rel="noopener noreferrer" style="color:#9de5f6">NASA observation and API source ↗</a></p><small>NASA's real observation is educational context. The radiation alert and all game resource effects are fictional, not predictions of what happened on the Moon. The game does not infer a lunar impact.</small>`;
+  panel.innerHTML=`<strong>REAL NASA DONKI DATA · RECENT SOLAR FLARE</strong><p>NASA recorded a ${safe(e.classification)} solar flare on ${safe(e.date)} (peak ${safe(e.peakUTC)} UTC).</p><p><a href="${safe(source)}" target="_blank" rel="noopener noreferrer" style="color:#9de5f6">NASA observation and API source ↗</a></p><small>NASA's real observation is educational context. The solar-flare scenario and all game resource effects are fictional, not predictions of what happened on the Moon. The game does not infer a lunar impact.</small>`;
  }catch{/* Historical NASA reference remains visible if the upstream service fails. */}
 }
 function apply(choice){if(advanced)return;advanced=true;
