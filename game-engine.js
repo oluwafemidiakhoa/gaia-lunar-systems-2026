@@ -158,7 +158,8 @@ export function playTurn(g,choice){
  const draw=()=>{const x=random(seed);seed=x.seed;roll=x.value;return roll;};
  const finish=(ended,won)=>{
   normalize(r);
-  const log={turn:g.turn,event:e.title,choice,points:grade.points,rating:grade.rating,reason:grade.reason,before,after:{...r},consequence,roll,investmentResults:due.map(p=>({target:p.target,success:p.success}))};
+  const choiceLabel=optionList(g).find(o=>o.id===choice)?.label||choice;
+  const log={turn:g.turn,event:e.title,choice,choiceLabel,points:grade.points,rating:grade.rating,reason:grade.reason,before,after:{...r},consequence,roll,investmentResults:due.map(p=>({target:p.target,success:p.success}))};
   return {...g,turn:ended?g.turn:g.turn+1,resources:r,seed,pending:[...g.pending.filter(p=>p.turn>g.turn),...pending],score:g.score+grade.points,finished:ended,win:won,log:[...g.log,log]};
  };
  if(g.turn===6){
