@@ -54,8 +54,28 @@ $("crew-pills").innerHTML=game.crew.map(id=>`<span class="pill">${safe(ROLES[id]
 $("crew-guide").textContent=game.crew.map(id=>ROLES[id].name+": "+ROLES[id].description).join(" · ");
 $("resources").innerHTML=RESOURCE_KEYS.map(k=>{let v=game.resources[k],label={crew:"🧑‍🚀 Crew health",base:"🏠 Base",parts:"🔧 Parts",power:"⚡ Power",water:"💧 Water",oxygen:"🌬️ Oxygen"}[k];return `<div class="resource"><span><strong>${label}</strong><b>${v}/10</b></span><div class="bar" role="progressbar" aria-label="${label}" aria-valuenow="${v}" aria-valuemin="0" aria-valuemax="10"><div class="fill ${v<=2?"critical":v<4?"low":""}" style="width:${v*10}%"></div></div>${v<=3?`<small role="alert" style="display:block;margin-top:8px;color:#ffb2b7">${safe(WARNINGS[k])}</small>`:""}</div>`}).join("");
 const evidence=n===2?`<details class="story-help" id="nasa-evidence"><summary>☀️ Real NASA observation</summary><div class="notice"><strong>REAL NASA DATA · PAST EVENT</strong><p>On 10 September 2017, NASA recorded an ${safe(solarRecord.classification)} solar flare, peaking at ${safe(solarRecord.peakUTC)}.</p><p><a href="${safe(solarRecord.sourceUrl)}" target="_blank" rel="noopener noreferrer" style="color:#9de5f6">NASA CCMC event record</a> · <a href="${safe(solarRecord.corroborationUrl)}" target="_blank" rel="noopener noreferrer" style="color:#9de5f6">NOAA confirmation</a></p><small>${safe(solarCaveat)}</small></div></details>`:"";
+const factList={
+ abundance:{fact:"A Moon day lasts about two Earth weeks, followed by roughly two weeks of night.",source:"NASA Moon facts",url:"https://science.nasa.gov/moon/facts/"},
+ solar:{fact:"A solar flare does not always mean energetic particles will reach the Moon.",source:"NASA DONKI",url:"https://ccmc.gsfc.nasa.gov/tools/DONKI/"},
+ sunset:{fact:"A lunar night can be colder than −170°C.",source:"NASA Moon facts",url:"https://science.nasa.gov/moon/facts/"},
+ dust:{fact:"Moon dust can wear down spacesuits and equipment.",source:"NASA lunar technology gaps #0801",url:"https://www.nasa.gov/wp-content/uploads/2025/12/2025-architecture-driven-technology-gaps.xlsx"},
+ battery:{fact:"A lunar night lasts much longer than the short dark periods experienced in low Earth orbit.",source:"NASA technology gap #0901",url:"https://www.nasa.gov/wp-content/uploads/2025/12/2025-architecture-driven-technology-gaps.xlsx"},
+ water:{fact:"NASA studies how to protect and restart water systems after long periods of storage.",source:"NASA technology gap #0303",url:"https://www.nasa.gov/wp-content/uploads/2025/12/2025-architecture-driven-technology-gaps.xlsx"},
+ cable:{fact:"NASA studies how to move electric power safely between equipment on the Moon.",source:"NASA technology gap #0903",url:"https://www.nasa.gov/wp-content/uploads/2025/12/2025-architecture-driven-technology-gaps.xlsx"},
+ computer:{fact:"Lunar electronics must withstand extreme temperature changes.",source:"NASA technology gap #0201",url:"https://www.nasa.gov/wp-content/uploads/2025/12/2025-architecture-driven-technology-gaps.xlsx"},
+ last:{fact:"The Moon has very long nights, so crews must plan power before the Sun returns.",source:"NASA Moon facts",url:"https://science.nasa.gov/moon/facts/"},
+ opportunity:{fact:"NASA has found lunar pits with temperatures near 17°C in some shaded areas.",source:"NASA Lunar Reconnaissance Orbiter study",url:"https://www.nasa.gov/solar-system/nasas-lro-finds-lunar-pits-harbor-comfortable-temperatures/"},
+ "crisis-crew":{fact:"NASA researches ways to support astronaut health far from Earth.",source:"NASA technology gap #0405",url:"https://www.nasa.gov/wp-content/uploads/2025/12/2025-architecture-driven-technology-gaps.xlsx"},
+ "crisis-base":{fact:"NASA wants robots that can inspect and repair equipment during missions.",source:"NASA technology gap #0501",url:"https://www.nasa.gov/wp-content/uploads/2025/12/2025-architecture-driven-technology-gaps.xlsx"},
+ "crisis-parts":{fact:"NASA researches making spare parts in space when deliveries are difficult.",source:"NASA technology gap #0502",url:"https://www.nasa.gov/wp-content/uploads/2025/12/2025-architecture-driven-technology-gaps.xlsx"},
+ "crisis-power":{fact:"Power storage during long, cold lunar nights is an important engineering challenge.",source:"NASA technology gap #0901",url:"https://www.nasa.gov/wp-content/uploads/2025/12/2025-architecture-driven-technology-gaps.xlsx"},
+ "crisis-water":{fact:"NASA researches ways for astronauts to monitor the safety of water.",source:"NASA technology gap #0304",url:"https://www.nasa.gov/wp-content/uploads/2025/12/2025-architecture-driven-technology-gaps.xlsx"},
+ "crisis-oxygen":{fact:"Scientists are working on ways to extract oxygen from Moon soil.",source:"NASA technology gap #0601",url:"https://www.nasa.gov/wp-content/uploads/2025/12/2025-architecture-driven-technology-gaps.xlsx"}
+};
+const didYouKnow=factList[e.id];
+const factHtml=didYouKnow?`<details class="story-help"><summary>💡 Did you know?</summary><p>${safe(didYouKnow.fact)}</p><small><a target="_blank" rel="noopener noreferrer" href="${safe(didYouKnow.url)}" style="color:#9de5f6">Source: ${safe(didYouKnow.source)}</a></small></details>`:"";
 const gapLabel=e.gap?`<p class="chip">NASA TECHNOLOGY-GAP REFERENCE #${safe(e.gap)} · ${safe(e.gapLabel||"Technology problem")}</p><small><a href="https://www.nasa.gov/wp-content/uploads/2025/12/2025-architecture-driven-technology-gaps.xlsx" target="_blank" rel="noopener noreferrer" style="color:#9de5f6">NASA Moon to Mars Technology Gaps (2025) ↗</a> · Game effects are fictional.</small>`:"";
-$("event").innerHTML=`<div class="chip">${safe(e.tag)} • FICTIONAL GAME EVENT</div><h3>${safe(e.title)}</h3><p>${safe(e.body)}</p>${gapLabel}${evidence}`;
+$("event").innerHTML=`<div class="chip">${safe(e.tag)} • FICTIONAL GAME EVENT</div><h3>${safe(e.title)}</h3><p>${safe(e.body)}</p>${factHtml}${gapLabel}${evidence}`;
 if(n===2)loadLatestSpaceWeather();
 $("choices").innerHTML=optionList(game).map(o=>`<button class="btn" data-choice="${o.id}">${safe(o.label)}<small>${safe(o.summary)}</small></button>`).join("");
 document.querySelectorAll("[data-choice]").forEach(el=>el.onclick=()=>apply(el.dataset.choice));
@@ -84,11 +104,7 @@ const changes=RESOURCE_KEYS.filter(k=>entry.before[k]!==entry.after[k]).map(k=>`
 $("feedback").innerHTML=`<strong>What happened?</strong> ${safe(entry.consequence)}<p>${safe(changes||"No resource change this turn.")}</p><small>Mission Control will review your choices at the end.</small>`;
 $("feedback").hidden=false;$("continue").textContent=game.finished?"View mission debrief →":"Next turn →";$("continue").hidden=false;
 }
-function shortReason(t){
- if(t.rating==="Good")return t.choice==="invest"?"Good call! You planned for later.":t.choice==="safe"?"Good call! You protected a low resource.":t.turn===5?"Good call! Your crew choice helped.":"Good call! You thought ahead.";
- if(t.rating==="OK")return "Fair choice! You balanced the risks.";
- return "Try another plan next time. What might you change?";
-}
+function shortReason(t){return t.reason||"Your choice changed the mission.";}
 function showReview(){
  const t=reviewData.turns[reviewIndex];
  $("review-prev").disabled=reviewIndex===0;
