@@ -21,6 +21,13 @@
 .notice{background:#183b4d;border:1px solid #39728a;border-radius:10px;padding:13px;line-height:1.55;margin:15px 0}
 .turnlog{padding:14px 0;border-bottom:1px solid #2a4860}.review-card{border:1px solid #39728a;background:#12324b;border-radius:16px;padding:20px;margin:20px 0;min-height:185px}.review-card h3{font-size:25px}.review-card p{font-size:17px}.review-controls{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.story-help{display:block;margin-top:10px}.story-help summary{cursor:pointer;color:#a3e3ee}.points{font-size:28px;font-weight:850;color:#a0eef8}
 footer{margin-top:50px;color:#8daabd;font-size:12px;line-height:1.7;border-top:1px solid #29455b;padding-top:20px}
+.moon{animation:moon-glow 5s ease-in-out infinite alternate}
+.event{position:relative}
+.event:before{content:"🚀";position:absolute;right:14px;top:8px;font-size:27px;opacity:.85;animation:float-in-space 3s ease-in-out infinite}
+.fill{transition:width .45s ease-out}
+@keyframes moon-glow{from{filter:brightness(.92)}to{filter:brightness(1.1)}}
+@keyframes float-in-space{0%,100%{transform:translateY(0) rotate(-8deg)}50%{transform:translateY(-5px) rotate(4deg)}}
+@media(prefers-reduced-motion:reduce){.moon,.event:before{animation:none!important}.fill{transition:none}}
 [hidden]{display:none!important}@media(max-width:720px){.hero{grid-template-columns:1fr;padding-top:38px}.moon{max-width:170px}.grid,.resources,.choices{grid-template-columns:1fr}h1{font-size:45px}.container{padding:20px 15px 45px}.panel{padding:19px}}
 </style></head>
 <body><div class="container"><header><div class="brand">GAIA LUNAR SYSTEMS <span aria-hidden="true">✦</span></div><div class="tag">MOON MISSION • EDUCATIONAL SIMULATION</div></header>
