@@ -57,7 +57,7 @@ $("feedback").innerHTML=`<strong>Mission update:</strong> ${safe(entry.consequen
 $("feedback").hidden=false;$("continue").textContent=game.finished?"View mission debrief →":"Next turn →";$("continue").hidden=false;
 }
 function results(){const d=debrief(game);show("results");$("result-heading").textContent=d.heading;$("score").textContent=d.score+" / 1,000";$("outcome").textContent=d.outcome;
-$("history").innerHTML=d.turns.map(t=>`<div class="turnlog"><div class="row between"><strong>Turn ${t.turn}: ${safe(t.event)}</strong><span class="pill">${safe(t.rating)} · ${t.points} points</span></div><p class="muted">${safe(t.reason)}</p><small>Choice: ${safe(t.choice)} • ${safe(t.consequence)}</small></div>`).join("");}
+$("history").innerHTML=d.turns.map(t=>`<div class="turnlog"><div class="row between"><strong>Turn ${t.turn}: ${safe(t.event)}</strong><span class="pill">${safe(t.rating)} · ${t.points} points</span></div><p class="muted">${safe(t.reason)}</p><small>Choice: ${safe(t.choice)} • ${safe(t.consequence)}</small></div>`).join("")+(d.poor.length?`<div class="notice"><h3>Decisions to review</h3>${d.poor.map(t=>`<p><strong>Turn ${t.turn}:</strong> ${safe(t.reason)}</p>`).join("")}</div>`:`<div class="notice">${safe(d.lesson||"No decisions were rated Poor.")}</div>`);}
 $("start").onclick=()=>{chosen=[];rolesView();show("selection");$("selection").scrollIntoView({behavior:"smooth"});};
 $("launch").onclick=()=>{game=createGame(chosen);show("game");render();$("game").scrollIntoView({behavior:"smooth"});};
 $("continue").onclick=()=>{if(game.finished)results();else render();};
