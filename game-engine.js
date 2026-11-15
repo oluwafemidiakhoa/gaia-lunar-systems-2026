@@ -42,7 +42,7 @@ const add=(r,key,n)=>{r[key]+=n;};
 const normalize=r=>{for(const key of RESOURCE_KEYS)r[key]=clamp(r[key]);};
 export function createGame(crew=["doctor","engineer"],seed=Date.now()>>>0,config={}){
  if(crew.length!==2||new Set(crew).size!==2||crew.some(c=>!ROLES[c]))throw Error("Choose two different specialists");
- return {turn:1,crew:[...crew],resources:{...START},seed:seed>>>0,pending:[],log:[],score:0,finished:false,win:false,config:{noCrewLossTurn1:!!config.noCrewLossTurn1}};
+ return {turn:1,crew:[...crew],resources:{...START},seed:seed>>>0,pending:[],log:[],score:0,finished:false,win:false,config:{noCrewLossTurn1:config.noCrewLossTurn1!==false}};
 }
 export function eventFor(g){
  if(g.turn===1)return EVENTS[0];
