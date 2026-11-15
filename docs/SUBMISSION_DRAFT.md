@@ -19,7 +19,7 @@ The player selects two specialists, manages six resource bars (crew wellbeing, h
 ## Science and data
 - The turn-two education panel documents a **historical X8.2 solar flare on 10 September 2017** (start 15:35 UTC, peak 16:06 UTC, end 16:31 UTC) using NASA CCMC's SEP event record and a NOAA contemporary bulletin.
 - The resource effects and risks in the **fictional game card** are **not derived from the flare observations**, do not imply that it struck any lunar crew, and are not lunar engineering predictions.
-- The demo does **not** provide a live NASA DONKI feed. A historical citation is reproducible offline and does not require credentials.
+- The prototype now includes a cached server-side NASA DONKI FLR request. When a validated recent flare is returned, the game can show its date, classification, and source. If unavailable, it displays the historical NASA case; recent-data functionality still requires live endpoint verification.
 - All game resource values, probability thresholds, turn lengths, and specialist effects are simplified unvalidated educational rules. NASA technology-gap mappings proposed in the design document should not be advertised as verified without checking against the primary NASA spreadsheet.
 
 ## How we built it
@@ -63,3 +63,6 @@ A static HTML/CSS/JavaScript interface with an isolated pure JavaScript state ma
 - [ ] Confirm latest automated checks passed and review Emir's v2 changes.
 - [ ] Submit by **November 15, 2026, 11:59 PM local time** (NASA Space Apps official 2026 page).
 - [ ] Capture the portal's final confirmation and project URL. **No submission is claimed until confirmed.**
+
+## Global Awards resource eligibility gate
+NASA Space Apps organizers state that eligibility for Global Awards requires at least one NASA data/resource item **listed under the Resources tab of the team's selected challenge**. DONKI alone is not proof of that requirement unless the selected challenge includes it. Confirm the registered challenge and its Resources, use and cite an eligible source, and do not claim eligibility until checked.
