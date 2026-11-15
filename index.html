@@ -45,7 +45,7 @@ $("turntitle").textContent=`Turn ${n} of 6`;$("phase").textContent=n<=3?"SUNLIT 
 $("progress").innerHTML=Array.from({length:6},(_,i)=>`<div class="step ${i<n?"done":""}" title="Turn ${i+1}"></div>`).join("");
 $("crew-pills").innerHTML=game.crew.map(id=>`<span class="pill">${safe(ROLES[id].name)}</span>`).join("");
 $("resources").innerHTML=RESOURCE_KEYS.map(k=>{let v=game.resources[k],label={crew:"Crew health",base:"Base integrity",parts:"Spare parts",power:"Power",water:"Water",oxygen:"Oxygen"}[k];return `<div class="resource"><span><strong>${label}</strong><b>${v}/10</b></span><div class="bar" role="progressbar" aria-label="${label}" aria-valuenow="${v}" aria-valuemin="0" aria-valuemax="10"><div class="fill ${v<=2?"critical":v<4?"low":""}" style="width:${v*10}%"></div></div>${v<=3?`<small role="alert" style="display:block;margin-top:8px;color:#ffb2b7">${safe(WARNINGS[k])}</small>`:""}</div>`}).join("");
-const evidence=n===2?`<div class="notice" id="nasa-evidence"><strong>REAL NASA DATA · PAST EVENT</strong><p>On 10 September 2017, NASA recorded an ${safe(solarRecord.classification)} solar flare, peaking at ${safe(solarRecord.peakUTC)}.</p><p><a href="${safe(solarRecord.sourceUrl)}" target="_blank" rel="noopener noreferrer" style="color:#9de5f6">NASA CCMC event record</a> · <a href="${safe(solarRecord.corroborationUrl)}" target="_blank" rel="noopener noreferrer" style="color:#9de5f6">NOAA confirmation</a></p><small>${safe(solarCaveat)}</small></div>`:"";
+const evidence=n===2?`<details class="story-help" id="nasa-evidence"><summary>☀️ Real NASA observation</summary><div class="notice"><strong>REAL NASA DATA · PAST EVENT</strong><p>On 10 September 2017, NASA recorded an ${safe(solarRecord.classification)} solar flare, peaking at ${safe(solarRecord.peakUTC)}.</p><p><a href="${safe(solarRecord.sourceUrl)}" target="_blank" rel="noopener noreferrer" style="color:#9de5f6">NASA CCMC event record</a> · <a href="${safe(solarRecord.corroborationUrl)}" target="_blank" rel="noopener noreferrer" style="color:#9de5f6">NOAA confirmation</a></p><small>${safe(solarCaveat)}</small></div></details>`:"";
 const gapLabel=e.gap?`<p class="chip">NASA TECHNOLOGY-GAP REFERENCE #${safe(e.gap)} · ${safe(e.gapLabel||"Technology problem")}</p><small><a href="https://www.nasa.gov/wp-content/uploads/2025/12/2025-architecture-driven-technology-gaps.xlsx" target="_blank" rel="noopener noreferrer" style="color:#9de5f6">NASA Moon to Mars Technology Gaps (2025) ↗</a> · Game effects are fictional.</small>`:"";
 $("event").innerHTML=`<div class="chip">${safe(e.tag)} • FICTIONAL GAME EVENT</div><h3>${safe(e.title)}</h3><p>${safe(e.body)}</p>${gapLabel}${evidence}`;
 if(n===2)loadLatestSpaceWeather();
@@ -55,7 +55,7 @@ $("feedback").hidden=true;$("continue").hidden=true;advanced=false;
 }
 // Data is educational context only: NEVER alter gameplay probabilities or resources.
 async function loadLatestSpaceWeather(){
- const panel=$("nasa-evidence");
+ const panel=$("nasa-evidence")?.querySelector(".notice");
  if(!panel)return;
  try{
   const response=await fetch("/api/space-weather",{headers:{Accept:"application/json"}});
@@ -73,7 +73,7 @@ function apply(choice){if(advanced)return;advanced=true;
 const next=playTurn(game,choice),entry=next.log[next.log.length-1];game=next;
 document.querySelectorAll("[data-choice]").forEach(b=>b.disabled=true);
 const changes=RESOURCE_KEYS.filter(k=>entry.before[k]!==entry.after[k]).map(k=>`${k}: ${entry.before[k]} → ${entry.after[k]}`).join(" · ");
-$("feedback").innerHTML=`<strong>Mission update:</strong> ${safe(entry.consequence)}<p>${safe(changes||"No net resource change this turn.")}</p><strong>Mission Control:</strong> ${safe(entry.reason)}<p>Decision rating: ${safe(entry.rating)} · ${entry.points} points</p>`;
+$("feedback").innerHTML=`<strong>What happened?</strong> ${safe(entry.consequence)}<p>${safe(changes||"No resource change this turn.")}</p><small>Mission Control will review your choices at the end.</small>`;
 $("feedback").hidden=false;$("continue").textContent=game.finished?"View mission debrief →":"Next turn →";$("continue").hidden=false;
 }
 function results(){const d=debrief(game);show("results");$("result-heading").textContent=d.heading;let best=d.score;try{const old=Number(localStorage.getItem("gaia-lunar-best-v2")||0);best=Math.max(best,Number.isFinite(old)?old:0);localStorage.setItem("gaia-lunar-best-v2",String(best));}catch{}$("score").textContent=d.score+" / 1,000 · Best: "+best;$("outcome").textContent=d.outcome;
