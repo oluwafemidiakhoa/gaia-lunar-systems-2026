@@ -11,7 +11,7 @@ export const ROLES={
 };
 export const EVENTS=[
  {id:"abundance",title:"Sunshine and plenty",tag:"DAY 1–5",target:"power",cost:"parts",body:"Extra solar energy is tempting. Enjoy it, play safe or invest in storage?"},
- {id:"solar",title:"A flash on the Sun!",tag:"DAY 6–10",target:"power",cost:"crew",body:"NASA records real solar flares. Charged particles may arrive later—or not at all. In our fictional mission, choose whether to finish the outside job or protect equipment; this solar-flare observation does not confirm lunar radiation exposure."},
+ {id:"solar",title:"A flash on the Sun!",tag:"DAY 6–10",target:"power",cost:"crew",body:"The Sun has flashed! Should your crew gamble on a power repair, play safe, or prepare for later? Real solar flares do not prove that particles reached the crew."},
  {id:"sunset",title:"Sunset approaches",tag:"DAY 11–15",target:"power",cost:"base",body:"The long lunar night approaches. Prepare energy reserves before the Sun sets."},
  {id:"dust",gap:"0801",gapLabel:"Lunar Dust-Tolerant Systems and Dust Mitigation",title:"Dust on the panels",tag:"DAY 16–20",target:"power",cost:"crew",body:"Moon dust can interfere with equipment. How will you respond?"},
  {id:"battery",gap:"0901",gapLabel:"Scalable Lunar Surface Power Generation",title:"Power-storage problem",tag:"DAY 16–20",target:"power",cost:"parts",body:"The batteries are losing stored energy. You need a plan."},
@@ -56,22 +56,24 @@ export function eventFor(g){
 }
 export function optionList(g){
  if(g.turn===6)return [
-  {id:"shutdown",label:"Shut down equipment",summary:"Crew −2 after routine night costs."},
-  {id:"heat",label:"Keep the heat on",summary:"Base −2, and Crew −3 if Power is below 2."}
+  {id:"shutdown",label:"Shut down equipment",summary:"Save equipment power. Crew health loses 2 more."},
+  {id:"heat",label:"Keep the heat on",summary:"Base loses 2. If power is under 2, Crew health also loses 3."}
  ];
  if(g.turn===5){const e=eventFor(g);return [
-  {id:"go",label:e.low?"Go fix it":"Explore the cave",summary:"A specialist-led risk: chance of +3 or −2, with a bonus to the low resource on crisis success."},
-  {id:"hold",label:e.low?"Hold on":"Strengthen the base",summary:"A different risky response: chance of +3 or −2."}
+  {id:"go",label:e.low?"Go fix it":"Explore the cave",summary:"Try a repair or explore. With the right expert: 75% chance it works; otherwise 35%."},
+  {id:"hold",label:e.low?"Hold on":"Strengthen the base",summary:"Try the safer-looking plan. It can still fail; the right expert helps."}
  ];}
  if(g.turn===1)return [
   {id:"risk",label:"Use extra power now",summary:"Enjoy a treat: Crew health +1 (up to 10), Power −3 (certain)."},
   {id:"safe",label:"Play safe",summary:"Power −1 (certain)."},
   {id:"invest",label:"Invest in storage",summary:"Spare parts −1; 50% chance of Power +2 on turn 3."}
  ];
+ const names={crew:"crew health",base:"base",parts:"parts",power:"power",water:"water",oxygen:"oxygen"};
+ const target=names[eventFor(g).target],cost=names[eventFor(g).cost];
  return [
- {id:"risk",label:"Take a calculated risk",summary:"Spend a support resource for a chance to recover the threatened resource."},
- {id:"safe",label:"Play safe",summary:"Accept a smaller, certain loss of the threatened resource."},
- {id:"invest",label:"Invest for later",summary:"Pay now for a 50% chance of a bonus two turns later."}
+ {id:"risk",label:"Take a calculated risk",summary:"Spend 1 "+cost+" for a chance to gain "+target+". This could fail."},
+ {id:"safe",label:"Play safe",summary:"Lose a little "+target+" now. No gamble."},
+ {id:"invest",label:"Invest for later",summary:"Spend "+cost+" now for a 50% chance to gain "+target+" in two turns."}
  ];
 }
 function dueInvestments(g,r){
