@@ -95,9 +95,9 @@ function scoreDecision(g,e,choice,r){
  const has=key=>g.crew.includes(key);
  const graded=(points,reason)=>({points,rating:points===150||points===250?"Good":points===75?"OK":"Poor",reason});
  if(g.turn===1){
-  if(choice==="risk")return graded(0,"Using extra power for a short treat wastes resources that will be needed at night.");
-  if(choice==="invest")return graded(150,"Investing spare parts early can create valuable energy reserves for the night.");
-  return graded(75,"Playing safe prevents a big loss, although an early investment offered better prospects.");
+  if(choice==="risk")return graded(0,"Fun now, but that power was needed for the night.");
+  if(choice==="invest")return graded(150,"Smart! Saving up for the long, dark night.");
+  return graded(75,"Safe, but saving the extra power was even better.");
  }
  if(g.turn>=2&&g.turn<=4){
   const targetLow=r[e.target]<=3,costHealthy=r[e.cost]>=4;
@@ -106,29 +106,29 @@ function scoreDecision(g,e,choice,r){
    // Proposed v2.1 calibration: specialist support alone is not enough for Good.
    // The threatened resource must genuinely need attention, and the cost must be affordable.
    const target=r[e.target];
-   if(!costHealthy)return graded(0,"This risk used a support resource that was already running low.");
-   if(target>=8)return graded(0,"The target was already well supplied, so the gamble was unnecessary.");
-   if(!specialist&&targetLow)return graded(0,"A critically low resource was risked without the right specialist.");
-   if(specialist&&target<=5)return graded(150,"A skilled crew member took a useful risk while supplies could cover the cost.");
-   if(specialist)return graded(75,"The specialist helped, but this risk was not urgently needed.");
-   if(target<=5)return graded(75,"The resource needed help, but no specialist could reduce the risk.");
-   return graded(0,"A gamble without specialist help was not necessary yet.");
+   if(!costHealthy)return graded(0,"Careful! You paid with something that was already running low.");
+   if(target>=8)return graded(0,"No need to gamble. You already had plenty.");
+   if(!specialist&&targetLow)return graded(0,"Risky! It was already low and no expert could help.");
+   if(specialist&&target<=5)return graded(150,"Good call! Your expert made this risk worth it.");
+   if(specialist)return graded(75,"Your expert helped, but this risk wasn't needed yet.");
+   if(target<=5)return graded(75,"It needed help, but no expert could make it safer.");
+   return graded(0,"No expert and no rush. This gamble wasn't needed.");
   }
   if(choice==="safe"){
-   if(targetLow)return graded(150,"Protecting a critically low resource limited a possible catastrophic loss.");
-   if(specialist||costHealthy)return graded(0,"A healthier or specialist-supported alternative was available; taking a certain loss was avoidable.");
-   return graded(75,"A cautious loss is reasonable when stronger alternatives are unavailable.");
+   if(targetLow)return graded(150,"Good call! You protected something that was running low.");
+   if(specialist||costHealthy)return graded(0,"There was a better choice. Playing safe still cost you.");
+   return graded(75,"Fair choice. Nothing better was available.");
   }
-  if(costHealthy&& !targetLow)return graded(150,"You had enough resources to invest and time for a future payoff.");
-  if(costHealthy)return graded(75,"Investing was affordable, but a critically low target might not survive until payoff.");
-  return graded(0,"You spent a resource that was already critically low.");
+  if(costHealthy&& !targetLow)return graded(150,"Smart! You used your spare supplies for later.");
+  if(costHealthy)return graded(75,"Nice idea, but it might run out before help arrives.");
+  return graded(0,"Careful! You spent something that was already low.");
  }
  if(g.turn===5){
   const selected=e[choice],other=e[choice==="go"?"hold":"go"],have=has(selected.specialist),otherHave=has(other.specialist);
-  if(have)return graded(150,"You used the specialist best suited to this response.");
-  if(otherHave)return graded(0,"The other response could use a specialist already on your crew.");
-  if(choice==="go")return graded(75,"No matching specialist was available, but you attempted to resolve the immediate problem.");
-  return graded(0,"You waited without specialist support even though action was possible.");
+  if(have)return graded(150,"Good call! The right expert for the job.");
+  if(otherHave)return graded(0,"Your expert was ready for the other choice.");
+  if(choice==="go")return graded(75,"Brave! No expert, but you faced the problem.");
+  return graded(0,"Waiting didn't help. Facing the problem was better.");
  }
  if(g.turn===6){
   const predicted=k=>{
@@ -142,7 +142,7 @@ function scoreDecision(g,e,choice,r){
   let best;
   if(wins(a)||wins(b))best=wins(choice==="shutdown"?a:b);
   else best=(choice==="shutdown"?a.crew+a.base:b.crew+b.base)>=Math.max(a.crew+a.base,b.crew+b.base);
-  return best?graded(250,"This option maximized survival or minimized losses using known final-turn costs."):graded(0,"The other final choice offered a better survival or damage outcome.");
+  return best?graded(250,"Good call! You picked what kept your crew and base safest."):graded(0,"The other choice would have kept your crew and base safer.");
  }
  throw Error("Unknown turn");
 }
@@ -200,8 +200,8 @@ export function playTurn(g,choice){
 export function debrief(g){
  if(!g.finished)return null;
  const high=g.score>=700;
- const heading=g.win?(high?"Mission Control is proud of you! Great decisions, and they paid off.":"You made it, but luck helped a lot. Look at these turns:"):
-  (high?"You made smart choices, but the Moon was tough this time.":"The mission didn't make it. Here's what went wrong:");
+ const heading=g.win?(high?"Mission Control is proud of you! Great choices paid off.":"You made it, but luck helped a lot!"):
+  (high?"Smart choices! The Moon was just tough this time.":"The mission didn't make it. Let's see what went wrong.");
  const poor=g.log.filter(x=>x.rating==="Poor");
  const unsuccessful=g.log.filter(x=>x.roll!==null&&/failed|did not work/i.test(x.consequence));
  const worst=unsuccessful.length?unsuccessful.reduce((a,b)=>{
@@ -211,12 +211,12 @@ export function debrief(g){
  const drop=RESOURCE_KEYS.map(k=>({key:k,value:Math.max(0,START[k]-g.resources[k])}))
    .sort((a,b)=>b.value-a.value)[0]?.key||"power";
  const tips={
-  crew:"Protect crew health early; the Doctor can prevent two routine fatigue losses.",
-  base:"Preserve base integrity before the final night, when further wear is expected.",
-  parts:"Save spare parts for urgent habitat and power problems.",
-  power:"Store energy while sunlight is available; solar power stops during the long night.",
-  water:"Watch water reserves and protect recycling equipment.",
-  oxygen:"Monitor oxygen closely because an air shortage can end the mission quickly."
+  crew:"Keep your crew healthy. A Medical Officer helps a lot.",
+  base:"Protect your base before the last night.",
+  parts:"Save some spare parts for emergencies.",
+  power:"Save power while the Sun is up. Night is long!",
+  water:"Keep an eye on your water.",
+  oxygen:"Watch your oxygen. Running out ends the mission fast."
  };
  const lesson=poor.length?null:worst
   ?"Turn "+worst.turn+" had an unfavorable random outcome. Your decision is scored separately from that outcome."
