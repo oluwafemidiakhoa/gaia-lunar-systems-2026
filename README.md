@@ -22,8 +22,8 @@ The score evaluates game-model choices before random outcomes, not post-hoc luck
 ## Current scope
 - One lunar-equator mission: **The First Night**.
 - Simplified game mechanics. Resource values and risk probabilities are **not validated engineering data**.
-- No live NASA DONKI API. The event is **illustrative** and clearly labeled.
-- No high-score persistence yet. The second South Pole mission is future scope.
+- The turn-two panel attempts to retrieve recent NASA DONKI solar-flare observations through a cached, read-only endpoint. A sourced historical flare remains as fallback; the fictional game effects do **not** depend on NASA data.
+- An on-device best score is saved locally; the second South Pole mission is future scope.
 - Source verification, game balance, and device testing remain before submission.
 
 ## Contribute
