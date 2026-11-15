@@ -144,10 +144,11 @@ test("turns four and five provide NASA gap codes when applicable",()=>{
  }
 });
 test("Hamza option B preserves one crew health on the first turn",()=>{
- const hard=playTurn(createGame(["doctor","engineer"],8),"safe");
- const easier=playTurn(createGame(["doctor","engineer"],8,{noCrewLossTurn1:true}),"safe");
+ const hard=playTurn(createGame(["doctor","engineer"],8,{noCrewLossTurn1:false}),"safe");
+ const easier=playTurn(createGame(["doctor","engineer"],8),"safe");
  assert.equal(easier.resources.crew,hard.resources.crew+1);
  assert.equal(hard.log[0].points,easier.log[0].points);
+ assert.equal(easier.resources.crew,10);
 });
 test("A/B resource trajectories remain bounded across team combinations and seeds",()=>{
  const roles=["doctor","engineer","field","scientist"];
