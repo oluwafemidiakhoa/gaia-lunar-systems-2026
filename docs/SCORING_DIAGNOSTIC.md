@@ -30,3 +30,22 @@ Keep the existing rule table until Emir's kid-friendly wording arrives and the t
 
 ## Verification scope
 Game-engine and rendering-shell unit tests are automated. Browser interaction, focus behavior, voice-over, full accessibility, and direct playtesting with children remain unverified.
+
+## Proposed v2.1 risk scoring calibration (2026-11-15)
+
+Following Hamza's repeatable risk-only strategy, an **unmerged branch experiment** tightened the Good/OK/Poor criteria for turns 2–4; the simulated resource consequences were **not** changed. A risk now needs a specialist, enough of the support resource (>=4), and a target that needs help (<=5) to earn Good. Unnecessary risks with abundant target resource or with dangerously low support resource are Poor. Low target with no specialist is Poor. Other meaningful risks are OK.
+
+A fresh 300-seed comparison **per specialist pair** produced these random-choice baselines. Same seed methodology and same existing simulation, old baseline above:
+
+| Specialist pair | Old mean | New mean | Old 700+ % | New 700+ % | Old 1000 % | New 1000 % |
+|---|---:|---:|---:|---:|---:|---:|
+| Doctor + Engineer | 555 | 481 | 26 | 16 | 0 | 0 |
+| Doctor + Field | 597 | 544 | 32 | 23 | 1 | 0 |
+| Doctor + Scientist | 499 | 445 | 18 | 12 | 0 | 0 |
+| Engineer + Field | 703 | 613 | 62 | 45 | 12 | 3 |
+| Engineer + Scientist | 580 | 508 | 38 | 23 | 1 | 1 |
+| Field + Scientist | 603 | 555 | 34 | 23 | 3 | 1 |
+
+Evidence: [GitHub Actions run 43725648087](https://github.com/oluwafemidiakhoa/gaia-lunar-systems-2026/actions/runs/43725648087), `GAIA_LUNAR_RANDOM_POLICY_BASELINE`. The counts, seeds, and display rounding are as in the automated test. The change improves calibration but **does not eliminate** the issue: Engineer + Field random decisions still achieve >=700 in 45% of simulated runs, and the six crew pairs retain unequal survival probabilities. This change is **proposed**, not approved by Emir/Hamza and not merged into production.
+
+Decision points before release: whether to retain the 1,000-point display, how to distinguish a highly rated decision from survival, and whether to modify risk mechanics beyond rubric (would be an explicit v2 rule change). Do not equate this random-choice simulation with empirical validation in children.
