@@ -118,3 +118,48 @@ test("all resource paths clamp for extreme low states",()=>{
  assert.equal(result.finished,true);
  for(const value of Object.values(result.resources))assert.ok(value>=0&&value<=10);
 });
+
+test("turn two flare card targets power and uses Field specialist",()=>{
+ let s=createGame(["doctor","field"],11);
+ s=playTurn(s,"safe");
+ const e=eventFor(s);
+ assert.equal(e.title,"A flash on the Sun!");
+ assert.equal(e.target,"power");
+ assert.equal(e.cost,"crew");
+ const withField=playTurn(s,"risk");
+ const noFieldState={...s,crew:["doctor","scientist"]};
+ const withoutField=playTurn(noFieldState,"risk");
+ assert.equal(withField.log.at(-1).points,150);
+ assert.equal(withoutField.log.at(-1).points,75);
+});
+test("turns four and five provide NASA gap codes when applicable",()=>{
+ for(let seed=0;seed<20;seed++){
+  let s=createGame(["doctor","engineer"],seed);
+  for(let i=0;i<3&&!s.finished;i++)s=playTurn(s,"safe");
+  if(s.finished)continue;
+  const event=eventFor(s);
+  assert.match(event.gap,/^[0-9]{4}$/);
+  s=playTurn(s,"safe");
+  if(!s.finished)assert.match(eventFor(s).gap,/^[0-9]{4}$/);
+ }
+});
+test("Hamza option B preserves one crew health on the first turn",()=>{
+ const hard=playTurn(createGame(["doctor","engineer"],8),"safe");
+ const easier=playTurn(createGame(["doctor","engineer"],8,{noCrewLossTurn1:true}),"safe");
+ assert.equal(easier.resources.crew,hard.resources.crew+1);
+ assert.equal(hard.log[0].points,easier.log[0].points);
+});
+test("A/B resource trajectories remain bounded across team combinations and seeds",()=>{
+ const roles=["doctor","engineer","field","scientist"];
+ for(const b of [false,true])for(let a=0;a<roles.length;a++)for(let j=a+1;j<roles.length;j++)for(let seed=0;seed<75;seed++){
+  let s=createGame([roles[a],roles[j]],seed,{noCrewLossTurn1:b});
+  let step=0;
+  while(!s.finished&&step++<6){
+   const options=optionList(s);
+   const id=options[(seed+step)%options.length].id;
+   s=playTurn(s,id);
+   for(const value of Object.values(s.resources))assert.ok(value>=0&&value<=10);
+  }
+  assert.equal(s.finished,true);
+ }
+});
