@@ -13,11 +13,11 @@ export const EVENTS=[
  {id:"abundance",title:"Sunshine and plenty",tag:"DAY 1–5",target:"power",cost:"parts",body:"Extra solar energy is tempting. Enjoy it, play safe or invest in storage?"},
  {id:"solar",title:"A flash on the Sun!",tag:"DAY 6–10",target:"power",cost:"crew",body:"NASA records real solar flares. Charged particles may arrive later—or not at all. In our fictional mission, choose whether to finish the outside job or protect equipment; this solar-flare observation does not confirm lunar radiation exposure."},
  {id:"sunset",title:"Sunset approaches",tag:"DAY 11–15",target:"power",cost:"base",body:"The long lunar night approaches. Prepare energy reserves before the Sun sets."},
- {id:"dust",gap:"0801",gapLabel:"Lunar dust",title:"Dust on the panels",tag:"DAY 16–20",target:"power",cost:"crew",body:"Moon dust can interfere with equipment. How will you respond?"},
- {id:"battery",gap:"0901",gapLabel:"Surface power and energy storage",title:"Power-storage problem",tag:"DAY 16–20",target:"power",cost:"parts",body:"The batteries are losing stored energy. You need a plan."},
- {id:"water",gap:"0303",gapLabel:"Water storage after dormancy",title:"Water recycler fault",tag:"DAY 16–20",target:"water",cost:"power",body:"The water system is not operating normally."},
- {id:"cable",gap:"0903",gapLabel:"Power distribution",title:"Power cable overload",tag:"DAY 16–20",target:"base",cost:"power",body:"An overloaded circuit threatens the habitat."},
- {id:"computer",gap:"0201",gapLabel:"Extreme-environment electronics",title:"Computer keeps crashing",tag:"DAY 16–20",target:"base",cost:"parts",body:"A controller repeatedly restarts in the cold."},
+ {id:"dust",gap:"0801",gapLabel:"Lunar Dust-Tolerant Systems and Dust Mitigation",title:"Dust on the panels",tag:"DAY 16–20",target:"power",cost:"crew",body:"Moon dust can interfere with equipment. How will you respond?"},
+ {id:"battery",gap:"0901",gapLabel:"Scalable Lunar Surface Power Generation",title:"Power-storage problem",tag:"DAY 16–20",target:"power",cost:"parts",body:"The batteries are losing stored energy. You need a plan."},
+ {id:"water",gap:"0303",gapLabel:"Dormancy Recovery for Habitat Water Storage, Distribution, and Reclamation",title:"Water recycler fault",tag:"DAY 16–20",target:"water",cost:"power",body:"The water system is not operating normally."},
+ {id:"cable",gap:"0903",gapLabel:"Power Management and Distribution between Surface Elements",title:"Power cable overload",tag:"DAY 16–20",target:"base",cost:"power",body:"An overloaded circuit threatens the habitat."},
+ {id:"computer",gap:"0201",gapLabel:"Extreme Environment Avionics",title:"Computer keeps crashing",tag:"DAY 16–20",target:"base",cost:"parts",body:"A controller repeatedly restarts in the cold."},
  {id:"last",title:"The last night",tag:"DAY 26–30",target:"crew",cost:"power",body:"Energy is running low. Choose whether to shut down equipment or protect the heating."}
 ];
 const CRISIS={
@@ -51,8 +51,8 @@ export function eventFor(g){
  if(g.turn===4)return EVENTS[3+(g.seed%5)];
  if(g.turn===6)return EVENTS[8];
  const low=RESOURCE_KEYS.filter(k=>g.resources[k]<4).sort((a,b)=>g.resources[a]-g.resources[b])[0];
- if(!low)return {id:"opportunity",gap:"0805",gapLabel:"Lunar caves",title:"A mysterious lunar cave",tag:"DAY 21–25",target:"crew",cost:"base",body:"Your outpost is stable enough to explore or strengthen the habitat.",go:{target:"crew",specialist:"field"},hold:{target:"base",specialist:"engineer"},low:null};
- return {id:"crisis-"+low,gap:({"crew":"0405","base":"0501","parts":"0502","power":"0901","water":"0304","oxygen":"0601"})[low],gapLabel:({"crew":"Crew health","base":"Habitat integrity","parts":"Spare-parts logistics","power":"Surface power and energy storage","water":"Water safety","oxygen":"Life support"})[low],title:CRISIS[low].title,tag:"DAY 21–25",target:low,cost:"parts",body:"A critical resource is low. Choose who should respond.",...CRISIS[low],low};
+ if(!low)return {id:"opportunity",gap:"0805",gapLabel:"Autonomous Surface Mobility and Navigation",title:"A mysterious lunar cave",tag:"DAY 21–25",target:"crew",cost:"base",body:"Your outpost is stable enough to explore or strengthen the habitat.",go:{target:"crew",specialist:"field"},hold:{target:"base",specialist:"engineer"},low:null};
+ return {id:"crisis-"+low,gap:({"crew":"0405","base":"0501","parts":"0502","power":"0901","water":"0304","oxygen":"0601"})[low],gapLabel:({"crew":"Exploration Medical Capabilities for Deep Space Missions","base":"Robotic Inspection, Maintenance, and Repair","parts":"In-situ Manufacturing of Spares, Repairs, and New Parts","power":"Scalable Lunar Surface Power Generation","water":"Habitat Environmental Monitors and Capabilities to Support Deep Space Missions","oxygen":"Oxygen Extraction from Lunar Regolith"})[low],title:CRISIS[low].title,tag:"DAY 21–25",target:low,cost:"parts",body:"A critical resource is low. Choose who should respond.",...CRISIS[low],low};
 }
 export function optionList(g){
  if(g.turn===6)return [
