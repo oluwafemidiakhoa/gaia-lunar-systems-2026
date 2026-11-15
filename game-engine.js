@@ -142,7 +142,9 @@ export function playTurn(g,choice){
  if(g.finished)throw Error("Mission already finished");
  if(!optionList(g).some(o=>o.id===choice))throw Error("Invalid choice");
  const e=eventFor(g),before={...g.resources},r={...g.resources};
- const due=dueInvestments(g,r),pending=[],current={...r},grade=scoreDecision(g,e,choice,current);
+ const due=dueInvestments(g,r),pending=[];
+ // The final-turn decision is evaluated after automatic night costs, per v2 §3.
+ let grade=g.turn===6?null:scoreDecision(g,e,choice,{...r});
  let seed=g.seed,consequence="",roll=null;
  const draw=()=>{const x=random(seed);seed=x.seed;roll=x.value;return roll;};
  const finish=(ended,won)=>{
@@ -151,6 +153,7 @@ export function playTurn(g,choice){
  };
  if(g.turn===6){
   automatic(g,r);zeroPenalties(r);
+  grade=scoreDecision(g,e,choice,{...r});
   if(r.crew===0){consequence="Critical resources failed before the final decision.";return finish(true,false);}
   if(choice==="shutdown"){add(r,"crew",-2);consequence="Equipment shut down to conserve energy; crew health fell.";}
   else {add(r,"base",-2);if(r.power<2)add(r,"crew",-3);consequence="Heating remained on, increasing stress on the habitat.";}
