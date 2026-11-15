@@ -64,7 +64,7 @@ export function optionList(g){
   {id:"hold",label:e.low?"Hold on":"Strengthen the base",summary:"A different risky response: chance of +3 or −2."}
  ];}
  if(g.turn===1)return [
-  {id:"risk",label:"Use extra power now",summary:"Enjoy a treat: Crew +1, Power −3 (certain)."},
+  {id:"risk",label:"Use extra power now",summary:"Enjoy a treat: Crew health +1 (up to 10), Power −3 (certain)."},
   {id:"safe",label:"Play safe",summary:"Power −1 (certain)."},
   {id:"invest",label:"Invest in storage",summary:"Spare parts −1; 50% chance of Power +2 on turn 3."}
  ];
@@ -103,9 +103,16 @@ function scoreDecision(g,e,choice,r){
   const targetLow=r[e.target]<=3,costHealthy=r[e.cost]>=4;
   const specialist=Object.entries(ROLES).some(([id,role])=>has(id)&&role.resources.includes(e.target));
   if(choice==="risk"){
-   if(specialist&&costHealthy)return graded(150,"A specialist raised the success chance, and your support resource was healthy.");
-   if(!specialist&&targetLow)return graded(0,"Without the right specialist, you risked a critically low resource.");
-   return graded(75,"The risk had some potential, but it was not clearly the strongest option.");
+   // Proposed v2.1 calibration: specialist support alone is not enough for Good.
+   // The threatened resource must genuinely need attention, and the cost must be affordable.
+   const target=r[e.target];
+   if(!costHealthy)return graded(0,"This risk used a support resource that was already running low.");
+   if(target>=8)return graded(0,"The target was already well supplied, so the gamble was unnecessary.");
+   if(!specialist&&targetLow)return graded(0,"A critically low resource was risked without the right specialist.");
+   if(specialist&&target<=5)return graded(150,"A skilled crew member took a useful risk while supplies could cover the cost.");
+   if(specialist)return graded(75,"The specialist helped, but this risk was not urgently needed.");
+   if(target<=5)return graded(75,"The resource needed help, but no specialist could reduce the risk.");
+   return graded(0,"A gamble without specialist help was not necessary yet.");
   }
   if(choice==="safe"){
    if(targetLow)return graded(150,"Protecting a critically low resource limited a possible catastrophic loss.");
@@ -169,7 +176,7 @@ export function playTurn(g,choice){
   if(success&&choice==="go"&&e.low)add(r,e.low,2);
   consequence=success?"The response worked and the crew stabilized the situation.":"The response failed this time; probabilities are part of this game model.";
  }else if(g.turn===1){
-  if(choice==="risk"){add(r,"crew",1);add(r,"power",-3);consequence="The crew enjoyed the energy, but the batteries were depleted.";}
+  if(choice==="risk"){add(r,"crew",1);add(r,"power",-3);consequence="Your astronauts enjoyed a break, but the batteries lost power. Crew health is not crew size.";}
   if(choice==="safe"){add(r,"power",-1);consequence="Power was conserved cautiously, with a small loss.";}
   if(choice==="invest"){add(r,"parts",-1);pending.push({turn:3,target:"power",bonus:2,success:draw()<0.5});consequence="Investment made; the result will be revealed on turn 3.";}
  }else if(choice==="safe"){
