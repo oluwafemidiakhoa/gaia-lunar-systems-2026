@@ -38,7 +38,8 @@ export const WARNINGS={
 };
 const random=seed=>{const next=(Math.imul(1664525,seed)+1013904223)>>>0;return {seed:next,value:next/4294967296};};
 export const clamp=n=>Math.max(0,Math.min(10,n));
-const add=(r,key,n)=>{r[key]=clamp(r[key]+n);};
+const add=(r,key,n)=>{r[key]+=n;};
+const normalize=r=>{for(const key of RESOURCE_KEYS)r[key]=clamp(r[key]);};
 export function createGame(crew=["doctor","engineer"],seed=Date.now()>>>0,config={}){
  if(crew.length!==2||new Set(crew).size!==2||crew.some(c=>!ROLES[c]))throw Error("Choose two different specialists");
  return {turn:1,crew:[...crew],resources:{...START},seed:seed>>>0,pending:[],log:[],score:0,finished:false,win:false,config:{noCrewLossTurn1:!!config.noCrewLossTurn1}};
@@ -143,6 +144,7 @@ export function playTurn(g,choice){
  if(!optionList(g).some(o=>o.id===choice))throw Error("Invalid choice");
  const e=eventFor(g),before={...g.resources},r={...g.resources};
  const due=dueInvestments(g,r),pending=[];
+ normalize(r);
  // The final-turn decision is evaluated after automatic night costs, per v2 §3.
  let grade=g.turn===6?null:scoreDecision(g,e,choice,{...r});
  let seed=g.seed,consequence="",roll=null;
@@ -152,11 +154,12 @@ export function playTurn(g,choice){
   return {...g,turn:ended?g.turn:g.turn+1,resources:r,seed,pending:[...g.pending.filter(p=>p.turn>g.turn),...pending],score:g.score+grade.points,finished:ended,win:won,log:[...g.log,log]};
  };
  if(g.turn===6){
-  automatic(g,r);zeroPenalties(r);
+  automatic(g,r);normalize(r);zeroPenalties(r);normalize(r);
   grade=scoreDecision(g,e,choice,{...r});
   if(r.crew===0){consequence="Critical resources failed before the final decision.";return finish(true,false);}
   if(choice==="shutdown"){add(r,"crew",-2);consequence="Equipment shut down to conserve energy; crew health fell.";}
   else {add(r,"base",-2);if(r.power<2)add(r,"crew",-3);consequence="Heating remained on, increasing stress on the habitat.";}
+  normalize(r);
   return finish(true,r.crew>=5&&r.base>=5);
  }
  if(g.turn===5){
