@@ -91,3 +91,30 @@ test("all five turn-four event cards can be selected",()=>{
  }
  assert.deepEqual([...ids].sort(),["battery","cable","computer","dust","water"]);
 });
+
+test("negative power after night drain triggers oxygen and water penalties and clamps",()=>{
+ const before=createGame(["doctor","engineer"],101);
+ const s={...before,turn:4,resources:{...before.resources,power:1,water:6,oxygen:6,crew:8}};
+ const result=playTurn(s,"safe");
+ assert.equal(result.resources.power,0);
+ assert.equal(result.resources.oxygen,3); // night -1 plus no power -2
+ assert.equal(result.resources.water,4); // night -1 plus no power -1
+ assert.ok(Object.values(result.resources).every(x=>x>=0&&x<=10));
+});
+test("negative oxygen produces crew loss and immediate mission termination",()=>{
+ const before=createGame(["doctor","engineer"],102);
+ const s={...before,turn:4,resources:{...before.resources,crew:4,oxygen:0,water:6,power:5}};
+ const result=playTurn(s,"safe");
+ assert.equal(result.finished,true);
+ assert.equal(result.win,false);
+ assert.equal(result.resources.crew,0);
+ assert.equal(result.resources.oxygen,0);
+ assert.equal(result.log.at(-1).after.crew,0);
+});
+test("all resource paths clamp for extreme low states",()=>{
+ const base=createGame(["doctor","engineer"],103);
+ const s={...base,turn:5,resources:{crew:2,base:0,parts:0,power:0,water:0,oxygen:0}};
+ const result=playTurn(s,"hold");
+ assert.equal(result.finished,true);
+ for(const value of Object.values(result.resources))assert.ok(value>=0&&value<=10);
+});
