@@ -12,4 +12,4 @@ export const HISTORICAL_SPACE_WEATHER={
  corroborationName:"NOAA Space Weather Prediction Center",
  corroborationUrl:"https://www.spaceweather.gov/news/x82-r3-strong-x-ray-event-observed-101606-utc"
 };
-export const HISTORICAL_SPACE_WEATHER_CAVEAT="Observed solar flare on September 10, 2017. This historical observation does NOT establish that radiation struck a lunar crew or caused the fictional game effects. No live API requests are made.";
+export const HISTORICAL_SPACE_WEATHER_CAVEAT="Observed solar flare on September 10, 2017. This historical observation does NOT establish that radiation struck a lunar crew or caused the fictional game effects. The app may separately request recent NASA DONKI data; if unavailable, this labeled historical example remains.";
