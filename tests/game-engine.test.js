@@ -129,7 +129,7 @@ test("turn two flare card targets power and uses Field specialist",()=>{
  const withField=playTurn(s,"risk");
  const noFieldState={...s,crew:["doctor","scientist"]};
  const withoutField=playTurn(noFieldState,"risk");
- assert.equal(withField.log.at(-1).points,150);
+ assert.equal(withField.log.at(-1).points,75); // Field helps, but a healthy power reserve does not justify top score
  assert.equal(withoutField.log.at(-1).points,75);
 });
 test("turns four and five provide NASA gap codes when applicable",()=>{
@@ -163,4 +163,31 @@ test("A/B resource trajectories remain bounded across team combinations and seed
   }
   assert.equal(s.finished,true);
  }
+});
+
+test("v2.1: repeated risk is not automatically a top score with Field Specialist",()=>{
+ const roles=["field","scientist"];
+ const scores=[];
+ for(let seed=0;seed<300;seed++){
+  let s=createGame(roles,seed+2401);
+  while(!s.finished){
+   const opts=optionList(s);
+   s=playTurn(s,opts.some(o=>o.id==="risk")?"risk":opts[0].id);
+  }
+  scores.push(s.score);
+ }
+ assert.ok(scores.every(s=>s<=1000));
+ const perfect=scores.filter(s=>s===1000).length;
+ assert.ok(perfect<10,"Repeated first-choice strategy should rarely score 1000: "+perfect);
+});
+test("v2.1 risk points depend on need and support, not merely Field's presence",()=>{
+ const baseline=playTurn(createGame(["field","scientist"],88),"safe");
+ const healthy=playTurn(baseline,"risk");
+ assert.equal(healthy.log.at(-1).points,75);
+ const low={...baseline,resources:{...baseline.resources,power:3,crew:8}};
+ const urgent=playTurn(low,"risk");
+ assert.equal(urgent.log.at(-1).points,150);
+ const costly={...low,resources:{...low.resources,crew:2}};
+ const reckless=playTurn(costly,"risk");
+ assert.equal(reckless.log.at(-1).points,0);
 });
